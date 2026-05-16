@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Móveis Lar Center | Catálogo e Links</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Variáveis de Cores de Transição */
+        :root {
+            --accent-color: #25d366;  /* Verde WhatsApp */
+            --instagram-color: #e4405f;
+            --transition-speed: 0.4s;
+            
+            /* Padrão: Modo Dia (Claro) */
+            --bg-color: #f8fafc;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --card-bg: #ffffff;
+            --card-border: rgba(0, 0, 0, 0.05);
+            --profile-border: #ffffff;
+            --btn-insta-bg: #0f172a;
+            --btn-insta-text: #ffffff;
+            --shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+        }
+
+        /* Configurações quando o Modo Noite estiver ativo */
+        [data-theme="dark"] {
+            --bg-color: #000000;
+            --text-main: #ffffff;
+            --text-muted: #e2e8f0;
+            --card-bg: rgba(15, 15, 15, 0.85);
+            --card-border: rgba(255, 255, 255, 0.2);
+            --profile-border: #ffffff;
+            --btn-insta-bg: rgba(255, 255, 255, 0.95);
+            --btn-insta-text: #1a365d;
+            --shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            padding: 40px 15px;
+            color: var(--text-main);
+            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Canvas do Matrix (Ativo no modo Noite) */
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity var(--transition-speed) ease;
+        }
+        [data-theme="dark"] #matrix-canvas {
+            opacity: 1;
+        }
+
+        /* Botão Alternar Tema */
+        .theme-toggle-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 10px 14px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 100;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+        .theme-toggle-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Container Principal */
+        .page-container {
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+        }
+
+        /* Foto de Perfil */
+        .profile-wrapper {
+            position: relative; 
+            width: 120px; 
+            height: 120px; 
+            margin-bottom: 20px; 
+        }
+        .profile-img {
+            width: 100%; 
+            height: 100%; 
+            border-radius: 50%; 
+            border: 4px solid var(--profile-border);
+            object-fit: cover; 
+            box-shadow: var(--shadow);
+            background-color: white;
+        }
+        
+        .verified-badge {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background-color: #008cff;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            border: 2px solid white;
+        }
+
+        /* Textos */
+        .brand-name { 
+            color: var(--text-main); 
+            font-size: 1.8rem; 
+            font-weight: 800; 
+            margin: 0; 
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            text-align: center;
+        }
+        .bio-description { 
+            color: var(--text-muted); 
+            font-size: 0.95rem; 
+            margin: 8px 0 25px 0; 
+            text-align: center; 
+            max-width: 340px;
+            line-height: 1.5;
+        }
+        .bio-description i {
+            color: #ef4444;
+            margin-right: 4px;
+        }
+
+        /* Botões */
+        .links-wrapper { 
+            width: 100%; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+            margin-bottom: 20px; 
+        }
+        .link-item {
+            text-decoration: none; 
+            padding: 16px;
+            border-radius: 14px; 
+            text-align: center; 
+            font-weight: 600;
+            font-size: 1.05rem;
+            box-shadow: var(--shadow); 
+            transition: all 0.25s ease;
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 12px;
+            border: 2px solid transparent;
+        }
+        
+        .btn-whatsapp {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        .btn-whatsapp:hover {
+            background-color: #1fbd5a;
+            transform: translateY(-2px);
+        }
+
+        .btn-instagram {
+            background-color: var(--btn-insta-bg);
+            color: var(--btn-insta-text);
+        }
+        .btn-instagram:hover {
+            transform: translateY(-2px);
+            border-color: #008cff;
+        }
+        .btn-instagram i {
+            color: var(--instagram-color);
+        }
+
+        /* Título do Carrossel */
+        .carousel-title {
+            align-self: flex-start;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 10px 0 12px 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* CARD DO CARROSSEL (Ajustado para preencher tudo) */
+        .carousel-container {
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--card-border);
+            background-color: var(--card-bg);
+            margin-top: -5px;
+        }
+        .carousel-track {
+            display: flex;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            width: 100%;
+        }
+        .carousel-slide {
+            min-width: 100%;
+            box-sizing: border-box;
+            aspect-ratio: 1.35 / 1; /* Mantém proporção perfeita de fotos de móveis */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* REMOVE O ESPAÇO DE SOBRA: Preenche totalmente o card */
+            display: block;
+        }
+
+        /* Setas */
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #0f172a;
+            border: none;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            z-index: 12;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        [data-theme="dark"] .carousel-btn {
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+        }
+        .carousel-btn:hover {
+            scale: 1.05;
+            color: #008cff;
+        }
+        .btn-left { left: 12px; }
+        .btn-right { right: 12px; }
+
+        /* Indicadores (Bolinhas) */
+        .carousel-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            position: absolute;
+            bottom: 15px;
+            width: 100%;
+            z-index: 12;
+        }
+        .indicator {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: rgba(15, 23, 42, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        [data-theme="dark"] .indicator {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+        .indicator.active {
+            background-color: #008cff;
+            width: 18px; 
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body data-theme="light">
+
+    <canvas id="matrix-canvas"></canvas>
+
+    <button class="theme-toggle-btn" onclick="toggleTheme()">
+        <span id="theme-icon"><i class="fa-solid fa-moon"></i></span>
+        <span id="theme-text">Modo Noite</span>
+    </button>
+
+    <div class="page-container">
+
+        <div class="profile-wrapper">
+            <img src="https://i.ibb.co/XhbgcQL/1767385197656-2.jpg" alt="Móveis Lar Center" class="profile-img">
+            <div class="verified-badge"><i class="fa-solid fa-check"></i></div>
+        </div>
+
+        <h1 class="brand-name">Móveis Lar Center</h1>
+        <p class="bio-description">
+            <i class="fa-solid fa-location-dot"></i> Rua Tancredo Neves, 592, Centro<br>Uarini - Amazonas<br>Encontre as melhores opções para o seu lar! 🏡✨
+        </p>
+
+        <div class="links-wrapper">
+            <a href="https://wa.me/5597984131826" target="_blank" class="link-item btn-whatsapp">
+                <i class="fa-brands fa-whatsapp"></i> Falar com um Vendedor
+            </a>
+            <a href="https://www.instagram.com/moveislarcenter/" target="_blank" class="link-item btn-instagram">
+                <i class="fa-brands fa-instagram"></i> Acompanhar no Instagram
+            </a>
+        </div>
+
+        <div class="carousel-title">Destaques da Semana</div>
+
+        <div class="carousel-container">
+            <button class="carousel-btn btn-left" onclick="moveSlide(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="carousel-btn btn-right" onclick="moveSlide(1)"><i class="fa-solid fa-chevron-right"></i></button>
+            
+            <div class="carousel-track" id="carouselTrack">
+                <div class="carousel-slide"><img src="https://i.ibb.co/rGzNrq7B/IMG-20260516-WA0008.jpg" alt="Móveis Sala"></div>
+                <div class="carousel-slide"><img src="https://i.ibb.co/Yx8TTXq/IMG-20260516-WA0009.jpg" alt="Estofados Premium"></div>
+                <div class="carousel-slide"><img src="https://i.ibb.co/QFNR1LyV/IMG-20260516-WA0010.jpg" alt="Novidades Loja"></div>
+                <div class="carousel-slide"><img src="https://i.ibb.co/jGKLmwr/IMG-20260516-WA0011.jpg" alt="Showroom Lar Center"></div>
+            </div>
+
+            <div class="carousel-indicators" id="carouselIndicators">
+                <div class="indicator active" onclick="goToSlide(0)"></div>
+                <div class="indicator" onclick="goToSlide(1)"></div>
+                <div class="indicator" onclick="goToSlide(2)"></div>
+                <div class="indicator" onclick="goToSlide(3)"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- SCRIPT DO MATRIX ---
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const rainDrops = [];
+        for (let x = 0; x < columns; x++) { rainDrops[x] = 1; }
+
+        function drawMatrix() {
+            if (document.body.getAttribute('data-theme') !== 'dark') return;
+            
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#008cff'; 
+            ctx.font = fontSize + 'px monospace';
+            for (let i = 0; i < rainDrops.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+                if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) { rainDrops[i] = 0; }
+                rainDrops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 30);
+
+        // --- INTERRUPTOR DE TEMA (DIA / NOITE) ---
+        function toggleTheme() {
+            const body = document.body;
+            const icon = document.getElementById('theme-icon');
+            const text = document.getElementById('theme-text');
+            
+            if (body.getAttribute('data-theme') === 'light') {
+                body.setAttribute('data-theme', 'dark');
+                icon.innerHTML = '<i class="fa-solid fa-sun"></i>';
+                text.innerText = 'Modo Dia';
+            } else {
+                body.setAttribute('data-theme', 'light');
+                icon.innerHTML = '<i class="fa-solid fa-moon"></i>';
+                text.innerText = 'Modo Noite';
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        // --- SCRIPT DO CARROSSEL ---
+        let currentSlide = 0;
+        const track = document.getElementById('carouselTrack');
+        const indicators = document.querySelectorAll('.indicator');
+        const totalSlides = document.querySelectorAll('.carousel-slide').length;
+
+        function updateSlidePosition() {
+            track.style.transform = `translateX(-${currentSlide * 100}%)`;
+            indicators.forEach((ind, index) => {
+                if(index === currentSlide) ind.classList.add('active');
+                else ind.classList.remove('active');
+            });
+        }
+
+        function moveSlide(direction) {
+            currentSlide += direction;
+            if (currentSlide >= totalSlides) currentSlide = 0;
+            if (currentSlide < 0) currentSlide = totalSlides - 1;
+            updateSlidePosition();
+        }
+
+        function goToSlide(slideIndex) {
+            currentSlide = slideIndex;
+            updateSlidePosition();
+        }
+
+        setInterval(() => {
+            moveSlide(1);
+        }, 4000);
+    </script>
+
+</body>
+</html>
